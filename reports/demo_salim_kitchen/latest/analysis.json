@@ -1,0 +1,309 @@
+{
+  "summary": {
+    "account": "demo_salim_kitchen",
+    "followers": 16000,
+    "posts_total": 220,
+    "posts_analyzed": 212,
+    "posts_young": 3,
+    "posts_no_baseline": 5,
+    "date_min": "2025-06-25",
+    "date_max": "2026-10-13",
+    "exposure_source": "views",
+    "exposure_label": "조회수(views)",
+    "median_exposure_recent": 16007.0,
+    "median_reach_recent": 11287.0,
+    "engagement_rate": 0.10797817805148552,
+    "like_rate": 0.050292052396246616,
+    "save_rate": 0.03777198623093315,
+    "share_rate": 0.010557050519560227,
+    "follow_per_1k": 3.982053400716338,
+    "reach_to_follower": 0.7054375,
+    "timezone": "Asia/Seoul",
+    "new_followers_30d": 816.0,
+    "posts_per_week_recent": 2.8000000000000003,
+    "n_viral": 13
+  },
+  "as_of": "2026-10-15T10:00:00+00:00",
+  "objectives": [
+    "views",
+    "follows",
+    "follow_rate",
+    "shares",
+    "saves"
+  ],
+  "recommendations": [
+    {
+      "category": "포맷",
+      "title": "「단일 사진」 비중을 줄이세요",
+      "detail": "조회수 ×0.60 (n=48 vs 164, 95% CI ×0.45–×0.72, q=0.001, 강한 근거, 모델 확인) · 팔로워 획득 ×0.42 (n=48 vs 164, 95% CI ×0.34–×0.60, q=0.000, 강한 근거, 모델 확인) · 팔로우 전환율 ×0.75 (n=48 vs 164, 95% CI ×0.48–×1.04, q=0.047, 가능성 있음) · 공유율 ×0.81 (n=48 vs 164, 95% CI ×0.59–×0.92, q=0.080, 강한 근거) · 저장율 ×0.73 (n=48 vs 164, 95% CI ×0.45–×0.93, q=0.028, 강한 근거)",
+      "evidence": "strong",
+      "model_agrees": true
+    },
+    {
+      "category": "주제",
+      "title": "「제품리뷰」 주제를 줄이거나 형식을 바꾸세요",
+      "detail": "조회수 ×0.78 (n=41 vs 171, 95% CI ×0.47–×1.06, q=0.245, 가능성 있음, 모델 확인) · 팔로워 획득 ×0.44 (n=41 vs 171, 95% CI ×0.25–×0.64, q=0.000, 강한 근거, 모델 확인) · 팔로우 전환율 ×0.49 (n=41 vs 171, 95% CI ×0.40–×0.65, q=0.000, 강한 근거) · 공유율 ×0.50 (n=41 vs 171, 95% CI ×0.41–×0.63, q=0.000, 강한 근거) · 저장율 ×0.49 (n=41 vs 171, 95% CI ×0.42–×0.63, q=0.000, 강한 근거)",
+      "evidence": "strong",
+      "model_agrees": true
+    },
+    {
+      "category": "CTA",
+      "title": "팔로우 유도 문구를 넣으세요",
+      "detail": "팔로워 획득 ×2.12 (n=66 vs 146, 95% CI ×1.19–×2.78, q=0.001, 강한 근거, 모델 확인) · 팔로우 전환율 ×1.94 (n=66 vs 146, 95% CI ×1.56–×2.22, q=0.000, 강한 근거)",
+      "evidence": "strong",
+      "model_agrees": true
+    },
+    {
+      "category": "주제",
+      "title": "「꿀팁」 주제를 늘리세요",
+      "detail": "조회수 ×1.51 (n=61 vs 151, 95% CI ×1.08–×1.80, q=0.044, 강한 근거, 모델 확인) · 공유율 ×2.20 (n=61 vs 151, 95% CI ×1.90–×2.55, q=0.000, 강한 근거) · 저장율 ×1.65 (n=61 vs 151, 95% CI ×1.20–×2.15, q=0.000, 강한 근거)",
+      "evidence": "strong",
+      "model_agrees": true
+    },
+    {
+      "category": "주제",
+      "title": "「브이로그」 주제를 늘리세요 — 단, 조회수, 공유율, 저장율은(는) 낮음(트레이드오프)",
+      "detail": "팔로워 획득 ×1.70 (n=37 vs 175, 95% CI ×1.28–×2.73, q=0.014, 강한 근거, 모델 확인) · 팔로우 전환율 ×2.08 (n=37 vs 175, 95% CI ×1.75–×2.64, q=0.000, 강한 근거) ⟷ 조회수 ×0.74 (n=37 vs 175, 95% CI ×0.62–×0.92, q=0.181, 가능성 있음, 모델 확인) · 공유율 ×0.56 (n=37 vs 175, 95% CI ×0.45–×0.72, q=0.000, 강한 근거) · 저장율 ×0.28 (n=37 vs 175, 95% CI ×0.22–×0.35, q=0.000, 강한 근거)",
+      "evidence": "strong",
+      "model_agrees": true
+    },
+    {
+      "category": "포맷",
+      "title": "「릴스」 비중을 늘리세요 — 단, 저장율은(는) 낮음(트레이드오프)",
+      "detail": "조회수 ×1.49 (n=100 vs 112, 95% CI ×1.20–×1.92, q=0.001, 강한 근거, 모델 확인) · 팔로워 획득 ×1.65 (n=100 vs 112, 95% CI ×1.37–×2.59, q=0.000, 강한 근거, 모델 확인) ⟷ 저장율 ×0.73 (n=100 vs 112, 95% CI ×0.59–×0.98, q=0.110, 가능성 있음)",
+      "evidence": "strong",
+      "model_agrees": true
+    },
+    {
+      "category": "게시 시간",
+      "title": "18–21시에 게시하세요",
+      "detail": "조회수 ×1.31 (n=60 vs 152, 95% CI ×1.06–×1.71, q=0.063, 강한 근거, 모델 확인) · 팔로워 획득 ×1.47 (n=60 vs 152, 95% CI ×1.07–×1.94, q=0.127, 가능성 있음, 모델 확인)",
+      "evidence": "strong",
+      "model_agrees": true
+    },
+    {
+      "category": "게시 시간",
+      "title": "00–03시 게시는 피하세요",
+      "detail": "조회수 ×0.44 (n=5 vs 207, 95% CI ×0.34–×1.45, q=0.245, 가능성 있음, 모델 확인)",
+      "evidence": "suggestive",
+      "model_agrees": true
+    },
+    {
+      "category": "릴스",
+      "title": "릴스 길이는 ≤15초로",
+      "detail": "조회수 ×1.31 (n=29 vs 71, 95% CI ×1.07–×1.99, q=0.061, 강한 근거, 모델 확인)",
+      "evidence": "strong",
+      "model_agrees": true
+    },
+    {
+      "category": "주제",
+      "title": "「레시피」 주제를 늘리세요",
+      "detail": "저장율 ×1.90 (n=62 vs 150, 95% CI ×1.55–×2.50, q=0.000, 강한 근거)",
+      "evidence": "strong",
+      "model_agrees": null
+    },
+    {
+      "category": "포맷",
+      "title": "「캐러셀(슬라이드)」 비중을 늘리세요",
+      "detail": "저장율 ×1.75 (n=64 vs 148, 95% CI ×1.44–×2.24, q=0.000, 강한 근거)",
+      "evidence": "strong",
+      "model_agrees": null
+    },
+    {
+      "category": "CTA",
+      "title": "저장 유도 문구를 넣으세요",
+      "detail": "저장율 ×1.33 (n=78 vs 134, 95% CI ×1.13–×1.85, q=0.001, 강한 근거)",
+      "evidence": "strong",
+      "model_agrees": null
+    },
+    {
+      "category": "해시태그",
+      "title": "해시태그 16개+는 피하세요",
+      "detail": "조회수 ×0.71 (n=30 vs 182, 95% CI ×0.48–×0.96, q=0.136, 가능성 있음, 모델 확인)",
+      "evidence": "suggestive",
+      "model_agrees": true
+    },
+    {
+      "category": "첫 줄(훅)",
+      "title": "개인 스토리형 훅은 줄이세요",
+      "detail": "공유율 ×0.75 (n=33 vs 179, 95% CI ×0.64–×0.96, q=0.275, 가능성 있음)",
+      "evidence": "suggestive",
+      "model_agrees": null
+    },
+    {
+      "category": "게시 빈도",
+      "title": "직전 게시물과 간격 1–2일일 때 성과가 좋았습니다",
+      "detail": "조회수 ×1.18 (n=81 vs 131, 95% CI ×0.99–×1.56, q=0.208, 가능성 있음)",
+      "evidence": "suggestive",
+      "model_agrees": null
+    },
+    {
+      "category": "첫 줄(훅)",
+      "title": "첫 줄을 숫자·리스트형 훅으로 시작하세요",
+      "detail": "저장율 ×1.27 (n=56 vs 156, 95% CI ×0.96–×1.66, q=0.139, 가능성 있음)",
+      "evidence": "suggestive",
+      "model_agrees": null
+    },
+    {
+      "category": "CTA",
+      "title": "공유 유도 문구를 넣으세요",
+      "detail": "공유율 ×1.22 (n=32 vs 180, 95% CI ×0.93–×1.74, q=0.275, 가능성 있음)",
+      "evidence": "suggestive",
+      "model_agrees": null
+    },
+    {
+      "category": "게시 시간",
+      "title": "추천 슬롯: 수 18–21시(×1.41), 월 18–21시(×1.29), 수 09–12시(×1.28)",
+      "detail": "요일 효과 + 시간대 효과를 축소추정해 합산(가산 모형). 시간대별 표본 ≥ 5개만 후보. 팔로워 접속 피크: 20시, 21시, 19시.",
+      "evidence": "descriptive",
+      "model_agrees": null
+    },
+    {
+      "category": "주제(필라)",
+      "title": "「꿀팁」은 도달용 — 끝에 팔로우 CTA를 붙여 전환까지 노리세요",
+      "detail": "조회수 ×1.35, 팔로우 전환율 ×0.89 (n=61, 축소추정 · 설정된 주제)",
+      "evidence": "descriptive",
+      "model_agrees": null
+    },
+    {
+      "category": "주제(필라)",
+      "title": "「레시피」은 도달용 — 끝에 팔로우 CTA를 붙여 전환까지 노리세요",
+      "detail": "조회수 ×1.02, 팔로우 전환율 ×1.00 (n=62, 축소추정 · 설정된 주제)",
+      "evidence": "descriptive",
+      "model_agrees": null
+    },
+    {
+      "category": "주제(필라)",
+      "title": "「브이로그」은 팔로워 전환용 — 도달이 잘 되는 포맷/훅과 결합하세요",
+      "detail": "조회수 ×0.79, 팔로우 전환율 ×1.70 (n=37, 축소추정 · 설정된 주제)",
+      "evidence": "descriptive",
+      "model_agrees": null
+    },
+    {
+      "category": "주제(필라)",
+      "title": "「제품리뷰」은 조회·전환 모두 평소 이하 — 줄이거나 형식을 바꿔 실험",
+      "detail": "조회수 ×0.82, 팔로우 전환율 ×0.60 (n=41, 축소추정 · 설정된 주제)",
+      "evidence": "descriptive",
+      "model_agrees": null
+    },
+    {
+      "category": "게시 빈도",
+      "title": "더 자주 올려도 게시물당 성과 저하 근거 없음 — 현재 주 2.8회 → 주 4회 시도",
+      "detail": "주간 게시 수 vs 게시물당 성과 ρ=0.01 (p=0.94); 주간 게시 수 vs 주간 총 노출 ρ=0.83",
+      "evidence": "descriptive",
+      "model_agrees": null
+    }
+  ],
+  "experiments": [
+    {
+      "name": "팔로우 유도 문구 A/B 확인",
+      "why": "팔로워 획득 ×2.12(강한 근거)지만 관측 데이터 — 주제·포맷 차이 때문일 가능성 배제 필요",
+      "how": "같은 주제·포맷·시간대로 해당 요소만 넣은/뺀 게시물 2~3쌍을 번갈아 게시 후 지수 비교"
+    },
+    {
+      "name": "저장 유도 문구 A/B 확인",
+      "why": "저장율 ×1.33(강한 근거)지만 관측 데이터 — 주제·포맷 차이 때문일 가능성 배제 필요",
+      "how": "같은 주제·포맷·시간대로 해당 요소만 넣은/뺀 게시물 2~3쌍을 번갈아 게시 후 지수 비교"
+    }
+  ],
+  "models": {
+    "views": {
+      "useful": true,
+      "spearman": 0.27378799670390036,
+      "spearman_p": 0.0022810503958198736,
+      "n_oos": 128,
+      "r2_oos": 0.040682040584583024,
+      "mae_model": 0.7675493679628885,
+      "mae_naive": 0.806858151220317,
+      "mae_improvement": 0.04871833196203901,
+      "reason": ""
+    },
+    "follows": {
+      "useful": true,
+      "spearman": 0.4621688126196823,
+      "spearman_p": 5.623849419638014e-08,
+      "n_oos": 128,
+      "r2_oos": 0.18817148061160638,
+      "mae_model": 0.9066783553830841,
+      "mae_naive": 1.0703986844078024,
+      "mae_improvement": 0.15295266278778785,
+      "reason": ""
+    }
+  },
+  "config": {
+    "analysis": {
+      "timezone": "Asia/Seoul",
+      "min_post_age_days": 7.0,
+      "baseline_window": 20,
+      "baseline_min_periods": 5,
+      "min_group_size": 5,
+      "fdr_q_strong": 0.1,
+      "p_suggestive": 0.05,
+      "shrinkage_k": 5.0,
+      "bootstrap_samples": 2000,
+      "random_seed": 42,
+      "min_term_count": 4,
+      "model_top_terms": 8,
+      "walk_forward_folds": 5,
+      "min_train_size": 30,
+      "ridge_alphas": [
+        2.0,
+        5.0,
+        10.0,
+        20.0,
+        40.0,
+        80.0
+      ],
+      "coef_bootstrap_samples": 300,
+      "viral_threshold": 3.0,
+      "hour_bucket_size": 3,
+      "include_stories": false
+    },
+    "api": {
+      "host": "graph.facebook.com",
+      "version": "v23.0",
+      "timeout_sec": 30.0,
+      "max_retries": 4,
+      "page_size": 50,
+      "cache_dir": "/tmp/claude-0/-home-user-insta/f7b7d063-f45d-5f50-b1a4-a93f3c014dae/scratchpad/live/.insta_runner/cache/api",
+      "insights_freeze_days": 30,
+      "min_interval_sec": 0.2,
+      "online_followers_tz": "America/Los_Angeles"
+    },
+    "plan": {
+      "posts_per_week": 0,
+      "weeks": 2,
+      "explore_ratio": 0.2
+    },
+    "monetization": {
+      "cpm_krw": 0.0
+    },
+    "topics": {
+      "레시피": [
+        "레시피",
+        "요리",
+        "도시락",
+        "집밥"
+      ],
+      "꿀팁": [
+        "꿀팁",
+        "살림",
+        "청소",
+        "세탁"
+      ],
+      "브이로그": [
+        "브이로그",
+        "일상",
+        "vlog",
+        "루틴"
+      ],
+      "제품리뷰": [
+        "리뷰",
+        "내돈내산",
+        "언박싱",
+        "써봤"
+      ]
+    },
+    "extra_stopwords": []
+  }
+}

@@ -1,0 +1,56 @@
+[CLI] [2026-10-15 10:56:51] level=INFO event=start command=demo version=1.1.1
+[LOAD] [2026-10-15 10:56:51] level=INFO event=demo_generated out_dir=/tmp/claude-0/-home-user-insta/f7b7d063-f45d-5f50-b1a4-a93f3c014dae/scratchpad/live/.insta_runner/runs/2026-10-15_195631/data seed=42 posts=221 as_of=2026-10-15T10:00:00+00:00 competitors=True
+[LOAD] [2026-10-15 10:56:51] level=INFO event=config_default detail="설정 파일 없음 — 기본값 사용"
+[CLI] [2026-10-15 10:56:51] level=INFO event=cache_dir_from_env path=/tmp/claude-0/-home-user-insta/f7b7d063-f45d-5f50-b1a4-a93f3c014dae/scratchpad/live/.insta_runner/cache/api
+[CLI] [2026-10-15 10:56:51] level=INFO event=demo_topics topics=[레시피,꿀팁,브이로그,제품리뷰] detail="데모용 주제 정의 사용"
+[LOAD] [2026-10-15 10:56:51] level=INFO event=dataset_loaded dir=/tmp/claude-0/-home-user-insta/f7b7d063-f45d-5f50-b1a4-a93f3c014dae/scratchpad/live/.insta_runner/runs/2026-10-15_195631/data posts=221 account=demo_salim_kitchen follower_daily=True online=True competitors=True date_min="2025-06-24 23:41:00+00:00" date_max="2026-10-12 23:23:00+00:00"
+[LOAD] [2026-10-15 10:56:51] level=INFO event=as_of value=2026-10-15T10:00:00+00:00 source=account.fetched_at
+[VALIDATE] [2026-10-15 10:56:51] level=WARNING event=duplicate_post_id count=1 detail="중복 게시물 ID — 지표가 가장 큰 행만 유지했습니다."
+[VALIDATE] [2026-10-15 10:56:51] level=INFO event=metric_coverage views=1 reach=1 likes=1 comments=1 saves=1 shares=1 follows=1 profile_visits=1 total_interactions=1 avg_watch_time_sec=0.482
+[VALIDATE] [2026-10-15 10:56:51] level=INFO event=validation_done rows_in=221 rows_out=220 issues=1 date_min=2025-06-24 date_max=2026-10-12
+[FEATURE] [2026-10-15 10:56:51] level=INFO event=time_features timezone=Asia/Seoul hour_bucket_size=3
+[FEATURE] [2026-10-15 10:56:51] level=INFO event=caption_features hooks=[hook_question,hook_number,hook_howto,hook_warning,hook_curiosity,hook_story,hook_promo] ctas=[cta_save,cta_share,cta_follow,cta_comment,cta_link] topics_defined=4 share_with_hook=0.732 median_hashtags=7
+[FEATURE] [2026-10-15 10:56:51] level=INFO event=baseline_warmup rows_without_baseline=5 detail="계정별 첫 5개 게시물은 기준선이 없어 지수 분석에서 제외"
+[FEATURE] [2026-10-15 10:56:51] level=INFO event=build_features_done elapsed_ms=60.3 rows=220 exposure_source=views mature=217 young=3 with_baseline=215 follows_available=True rate_denominator=reach
+[ANALYZE] [2026-10-15 10:56:51] level=INFO event=analysis_sample analyzed=212 young_excluded=3 no_baseline_excluded=5 date_min="2025-07-06 10:37:00+00:00" date_max="2026-10-04 12:30:00+00:00"
+[ANALYZE] [2026-10-15 10:56:51] level=INFO event=objectives available=[views,follows,follow_rate,shares,saves]
+[ANALYZE] [2026-10-15 10:56:54] level=INFO event=factor_tests objective=follow_rate tests=53 insufficient=1 none=46 strong=3 suggestive=3
+[ANALYZE] [2026-10-15 10:56:54] level=INFO event=factor_tests objective=follows tests=53 insufficient=1 none=45 strong=5 suggestive=2
+[ANALYZE] [2026-10-15 10:56:54] level=INFO event=factor_tests objective=saves tests=53 insufficient=1 none=42 strong=7 suggestive=3
+[ANALYZE] [2026-10-15 10:56:54] level=INFO event=factor_tests objective=shares tests=53 insufficient=1 none=45 strong=4 suggestive=3
+[ANALYZE] [2026-10-15 10:56:54] level=INFO event=factor_tests objective=views tests=53 insufficient=1 none=42 strong=5 suggestive=5
+[ANALYZE] [2026-10-15 10:56:54] level=INFO event=time_effects best_hours=[18–21시,09–12시,21–24시] best_days=[수,월,일] best_slots=["수 18–21시","월 18–21시","수 09–12시"] shrinkage_k=5
+[ANALYZE] [2026-10-15 10:56:54] level=INFO event=online_followers days=30 peak_hours_local=[20,21,19] source_tz=local
+[ANALYZE] [2026-10-15 10:56:54] level=INFO event=term_table column=hashtags terms=55 min_count=4 top=[레시피,살림꿀팁,집밥,청소,살림] bottom=[제품리뷰,혼자놀기,주말]
+[ANALYZE] [2026-10-15 10:56:54] level=INFO event=term_table column=tokens terms=109 min_count=4 top=[자취방,공간,활용이,옷장,살림] bottom=[가습기,일상,갈지]
+[ANALYZE] [2026-10-15 10:56:54] level=INFO event=topics source=config topics=4 quadrants="{'꿀팁': '도달형(조회수 견인)', '레시피': '도달형(조회수 견인)', '제품리뷰': '재검토', '브이로그': '전환형(팔로워 전환)'}"
+[ANALYZE] [2026-10-15 10:56:54] level=INFO event=cadence posts_per_week_recent=2.8 weeks=62 rho_per_post=0.0103 p_per_post=0.9385 rho_total=0.8275 p_total=1.322e-18
+[ANALYZE] [2026-10-15 10:56:54] level=INFO event=run_analysis_done elapsed_ms=2878 tests=265 strong=24
+[VALIDATE] [2026-10-15 10:56:54] level=INFO event=metric_coverage views=0 reach=0 likes=1 comments=1 saves=0 shares=0 follows=0 profile_visits=0 total_interactions=0 avg_watch_time_sec=0
+[VALIDATE] [2026-10-15 10:56:54] level=INFO event=validation_done rows_in=270 rows_out=270 issues=0 date_min=2025-12-19 date_max=2026-10-13
+[FEATURE] [2026-10-15 10:56:54] level=INFO event=time_features timezone=Asia/Seoul hour_bucket_size=3
+[FEATURE] [2026-10-15 10:56:54] level=INFO event=caption_features hooks=[hook_question,hook_number,hook_howto,hook_warning,hook_curiosity,hook_story,hook_promo] ctas=[cta_save,cta_share,cta_follow,cta_comment,cta_link] topics_defined=4 share_with_hook=0.833 median_hashtags=7
+[FEATURE] [2026-10-15 10:56:54] level=INFO event=baseline_warmup rows_without_baseline=15 detail="계정별 첫 5개 게시물은 기준선이 없어 지수 분석에서 제외"
+[FEATURE] [2026-10-15 10:56:54] level=INFO event=build_features_done elapsed_ms=85.2 rows=270 exposure_source=engagement_proxy mature=261 young=9 with_baseline=255 follows_available=False rate_denominator=none
+[ANALYZE] [2026-10-15 10:56:55] level=INFO event=factor_tests objective=views tests=49 insufficient=1 none=43 strong=3 suggestive=2
+[ANALYZE] [2026-10-15 10:56:55] level=INFO event=term_table column=hashtags terms=55 min_count=4 top=[주말,요리스타그램,자취꿀팁,생활꿀팁,혼자놀기] bottom=[리뷰,가전추천,쇼핑]
+[ANALYZE] [2026-10-15 10:56:55] level=INFO event=competitors accounts=3 posts=246 strong=3
+[MODEL] [2026-10-15 10:56:55] level=INFO event=walk_forward_fold target=log2_perf fold=1 train_start=2025-07-06 train_end=2026-01-04 test_start=2026-01-12 test_end=2026-02-16 n_train=84 n_test=25 alpha=80 n_features=55 spearman=0.0785 mae_model=0.7079 mae_naive=0.6995
+[MODEL] [2026-10-15 10:56:55] level=INFO event=walk_forward_fold target=log2_perf fold=2 train_start=2025-07-06 train_end=2026-02-16 test_start=2026-02-20 test_end=2026-04-29 n_train=109 n_test=26 alpha=80 n_features=55 spearman=0.0687 mae_model=0.7718 mae_naive=0.7936
+[MODEL] [2026-10-15 10:56:55] level=INFO event=walk_forward_fold target=log2_perf fold=3 train_start=2025-07-06 train_end=2026-04-29 test_start=2026-04-30 test_end=2026-06-11 n_train=135 n_test=25 alpha=80 n_features=55 spearman=0.6638 mae_model=0.6357 mae_naive=0.7549
+[MODEL] [2026-10-15 10:56:55] level=INFO event=walk_forward_fold target=log2_perf fold=4 train_start=2025-07-06 train_end=2026-06-11 test_start=2026-06-15 test_end=2026-07-20 n_train=160 n_test=26 alpha=40 n_features=55 spearman=0.053 mae_model=1.119 mae_naive=1.1378
+[MODEL] [2026-10-15 10:56:55] level=INFO event=walk_forward_fold target=log2_perf fold=5 train_start=2025-07-06 train_end=2026-07-20 test_start=2026-07-30 test_end=2026-10-04 n_train=186 n_test=26 alpha=80 n_features=55 spearman=0.4509 mae_model=0.596 mae_naive=0.6424
+[MODEL] [2026-10-15 10:56:55] level=INFO event=walk_forward_summary target=log2_perf useful=True spearman=0.2738 p=0.0023 r2_oos=0.0407 mae_model=0.7675 mae_naive=0.8069 n_oos=128
+[MODEL] [2026-10-15 10:56:55] level=INFO event=train_model_done elapsed_ms=170.3 objective=views rows=212 alpha=80 n_features=56 useful=True top_effects=[["포맷: 릴스",1.12],["릴스 길이: ≤15초",1.11],["포맷: 단일 사진",0.91],["주제: 꿀팁",1.09],["직전 게시물과의 간격(log)",1.08]]
+[MODEL] [2026-10-15 10:56:55] level=INFO event=walk_forward_fold target=log2_follow fold=1 train_start=2025-07-06 train_end=2026-01-04 test_start=2026-01-12 test_end=2026-02-16 n_train=84 n_test=25 alpha=20 n_features=55 spearman=0.2608 mae_model=1.1333 mae_naive=1.2086
+[MODEL] [2026-10-15 10:56:55] level=INFO event=walk_forward_fold target=log2_follow fold=2 train_start=2025-07-06 train_end=2026-02-16 test_start=2026-02-20 test_end=2026-04-29 n_train=109 n_test=26 alpha=20 n_features=55 spearman=0.4065 mae_model=0.8814 mae_naive=0.9383
+[MODEL] [2026-10-15 10:56:55] level=INFO event=walk_forward_fold target=log2_follow fold=3 train_start=2025-07-06 train_end=2026-04-29 test_start=2026-04-30 test_end=2026-06-11 n_train=135 n_test=25 alpha=40 n_features=55 spearman=0.7103 mae_model=0.7408 mae_naive=1.0353
+[MODEL] [2026-10-15 10:56:55] level=INFO event=walk_forward_fold target=log2_follow fold=4 train_start=2025-07-06 train_end=2026-06-11 test_start=2026-06-15 test_end=2026-07-20 n_train=160 n_test=26 alpha=40 n_features=55 spearman=0.427 mae_model=1.0223 mae_naive=1.2514
+[MODEL] [2026-10-15 10:56:55] level=INFO event=walk_forward_fold target=log2_follow fold=5 train_start=2025-07-06 train_end=2026-07-20 test_start=2026-07-30 test_end=2026-10-04 n_train=186 n_test=26 alpha=40 n_features=55 spearman=0.5918 mae_model=0.758 mae_naive=0.9224
+[MODEL] [2026-10-15 10:56:55] level=INFO event=walk_forward_summary target=log2_follow useful=True spearman=0.4622 p=5.624e-08 r2_oos=0.1882 mae_model=0.9067 mae_naive=1.0704 n_oos=128
+[MODEL] [2026-10-15 10:56:55] level=INFO event=train_model_done elapsed_ms=161.6 objective=follows rows=212 alpha=20 n_features=56 useful=True top_effects=[["주제: 제품리뷰",0.64],["포맷: 단일 사진",0.73],["포맷: 릴스",1.35],["주제: 브이로그",1.33],["릴스 길이: ≤15초",1.23]]
+[RECOMMEND] [2026-10-15 10:56:55] level=INFO event=recommendations total=23 strong=11 suggestive=6 model_confirmed=10 top=["「단일 사진」 비중을 줄이세요","「제품리뷰」 주제를 줄이거나 형식을 바꾸세요","팔로우 유도 문구를 넣으세요","「꿀팁」 주제를 늘리세요","「브이로그」 주제를 늘리세요 — 단, 조회수, 공유율, 저장율은(는) 낮음(트레이드오프)"]
+[RECOMMEND] [2026-10-15 10:56:55] level=INFO event=experiments count=2 names=["팔로우 유도 문구 A/B 확인","저장 유도 문구 A/B 확인"]
+[RECOMMEND] [2026-10-15 10:56:55] level=INFO event=plan_cadence posts_per_week=3 current=2.8 source="auto(현재 빈도, 3~7 클리핑)"
+[RECOMMEND] [2026-10-15 10:56:55] level=INFO event=content_plan posts=6 weeks=2 reach_format=reel conversion_format=reel reach_hook=hook_question slots=["월 18–21시","수 18–21시","일 18–21시"] explore_every=5
+[REPORT] [2026-10-15 10:56:55] level=INFO event=write_reports_done elapsed_ms=106.9 out_dir=/tmp/claude-0/-home-user-insta/f7b7d063-f45d-5f50-b1a4-a93f3c014dae/scratchpad/live/.insta_runner/runs/2026-10-15_195631/out files=16 html_kb=233.6

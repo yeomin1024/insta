@@ -1,0 +1,39 @@
+{
+  "run_id": "2026-10-15_195631",
+  "runner_version": "1.0.0",
+  "started_at": "2026-10-15 19:56:31 KST",
+  "status": "success",
+  "source": "demo",
+  "account": "demo_salim_kitchen",
+  "code": {
+    "repo": "yeomin1024/insta",
+    "ref": "claude/funny-galileo-k7p619",
+    "url": "https://github.com/yeomin1024/insta.git",
+    "sha": "23fa8e7b47d62ec68fb9e58c63ab8f9610185dfc",
+    "commit_date": "2026-10-15T10:56:20+00:00",
+    "subject": "워크플로: 공개 저장소 결과 업로드 기본 허용(소유자 결정, v1.1.1)",
+    "analyzer_version": "1.1.1"
+  },
+  "environment": {
+    "platform": "Linux-6.18.44-fc-v114-x86_64-with-glibc2.39",
+    "runner_python": "3.13.16",
+    "github_run": null,
+    "python": "3.13.16",
+    "pandas": "3.0.6",
+    "numpy": "2.5.4"
+  },
+  "stages_sec": {
+    "fetch_code": 0.74,
+    "install": 17.66,
+    "analyze": 4.76
+  },
+  "public_logs_hidden": false,
+  "posts_analyzed": 212,
+  "top_recommendation": "「단일 사진」 비중을 줄이세요",
+  "finished_at": "2026-10-15 19:56:55 KST",
+  "duration_sec": 24.0,
+  "results": {
+    "repo": "yeomin1024/insta",
+    "branch": "results"
+  }
+}
