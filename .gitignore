@@ -1,9 +1,10 @@
-# 개인 데이터·분석 결과·API 캐시는 저장소에 올리지 않는다
+# 개인 데이터·분석 결과·API 캐시는 코드 브랜치에 올리지 않는다(결과는 실행기가 results 브랜치에 업로드)
+# config.toml(주제 정의 등, 비밀값 없음)은 Actions 실행에 필요하므로 커밋 가능
 data/
 output/
 .cache/
 .env
-config.toml
+.insta_runner/
 
 # Python
 __pycache__/

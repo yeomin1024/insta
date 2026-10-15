@@ -2,6 +2,32 @@
 
 형식: `버전 — 날짜 — 변경 내용(이유) — 영향 받은 모듈`
 
+## v1.1.0 — 2026-10-15 — GitHub 실행 구조: 코드는 GitHub에서 받아 실행, 결과는 GitHub에 업로드 (v1.0.0 → v1.1.0)
+
+요청: "분석 코드는 깃허브에 두고, 실행 코드는 그걸 받아서 실행하고, 결과는 깃허브에 올리도록".
+
+### 추가
+- `runner/run.py` (실행기 v1.0.0, 표준 라이브러리 + git만 사용)
+  - FETCH_CODE: `--code-repo`/`--code-ref`(브랜치·태그·커밋)로 분석 코드를 매 실행마다 GitHub에서 받음, 커밋 SHA·버전 기록
+  - INSTALL: 가상환경(기본)/시스템/생략, requirements 해시가 같으면 재설치 생략(2회차 실행 20.3s → 2.3s)
+  - DATA: 소스 자동 결정(api → inputs/ CSV → demo), CSV 기준 시각 = 업로드 커밋 시각, **공개 결과 저장소 차단**
+  - ANALYZE: 받아온 코드로 `python -m insta_analyzer` 실행(공개 저장소 Actions에서 실제 데이터면 출력 비공개)
+  - PUBLISH: `results` 브랜치에 `reports/<계정>/latest|history/<실행ID>`, `runs.csv`, 인덱스 README 커밋·푸시,
+    충돌 시 최신 상태 재적용 재시도(2·4·8·16초), 실패 실행은 기록만 남기고 latest 유지, 보관 개수 제한(`--keep`)
+  - 실행 기록 `run.json`: 코드 저장소/ref/SHA, 데이터 소스, 기준 시각, 입력 파일 해시, 환경(파이썬·pandas·numpy), 단계별 소요 시간
+  - 비밀값(GITHUB_TOKEN·RESULTS_TOKEN·IG_ACCESS_TOKEN, git 인증 헤더) 로그·기록 마스킹
+- `.github/workflows/analyze.yml`: 수동 실행(소스·코드 버전·경쟁 계정 입력), 매주 월 08:53 KST, `inputs/**.csv` 업로드 시 자동 실행,
+  동시 실행 직렬화, API 응답 캐시 유지(actions/cache), 입력값은 환경변수로 전달(스크립트 주입 방지)
+- 예약 실행에서 데이터 소스(토큰·CSV)가 없으면 합성 데이터 결과를 쌓지 않고 건너뜀(`--skip-auto-demo`)
+- `inputs/README.md`: CSV 업로드 안내 + 공개 저장소 경고
+- 테스트 9개(`tests/test_runner.py` 8개, `--as-of` 오프셋 1개) → 총 51개
+
+### 변경
+- `cli.py`: `INSTA_CACHE_DIR` 환경변수로 API 캐시 위치 지정(실행기의 영구 캐시 폴더), `import-csv --as-of`가
+  시간대 오프셋(`...+00:00`)을 존중(이전: 항상 설정 시간대로 해석 → 실행기 연동 시 9시간 오차 가능)
+- `.gitignore`: `config.toml`을 커밋 가능하게(Actions 실행에 필요, 비밀값 없음), `.insta_runner/` 제외
+- `tests.yml`: `results` 브랜치·`inputs/` 변경에는 테스트 미실행
+
 ## v1.0.0 — 2026-10-15 — 최초 릴리스 (v0.0.0 빈 저장소 → v1.0.0)
 
 ### 추가

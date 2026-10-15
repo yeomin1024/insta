@@ -49,3 +49,20 @@ def test_manual_column_mapping(tmp_path):
     df = import_csv_files([p], "Asia/Seoul", manual_map={"when": "timestamp", "txt": "caption", "plays": "views"})
     assert len(df) == 2 and df["views"].tolist() == [100.0, 200.0]
     assert df["post_id"].str.len().eq(16).all()  # post_id 없음 → 해시 생성
+
+
+def test_import_csv_as_of_respects_offset(tmp_path):
+    """실행기가 넘기는 '2026-10-15T09:30+00:00'(UTC 오프셋)이 서울 시각으로 오해되지 않아야 한다."""
+    import json
+
+    from insta_analyzer.cli import main
+    p = tmp_path / "e.csv"
+    p.write_text("게시 시간,설명,조회\n2026-09-01 20:00,a,100\n", encoding="utf-8")
+    out = tmp_path / "d"
+    assert main(["--log-level", "WARNING", "import-csv", str(p), "--out", str(out),
+                 "--as-of", "2026-10-15T09:30+00:00"]) == 0
+    acc = json.loads((out / "account.json").read_text(encoding="utf-8"))
+    assert acc["fetched_at"].startswith("2026-10-15T09:30:00")
+    assert main(["--log-level", "WARNING", "import-csv", str(p), "--out", str(out), "--as-of", "2026-10-15"]) == 0
+    acc = json.loads((out / "account.json").read_text(encoding="utf-8"))
+    assert acc["fetched_at"].startswith("2026-10-14T15:00:00")  # 서울 자정 = UTC 전날 15시

@@ -1,7 +1,9 @@
-# VERSION: v1.0.0 — 2026-10-15 — 최초 릴리스: 테스트 CI
+# VERSION: v1.1.0 — 2026-10-15 — results 브랜치·inputs 업로드는 테스트 제외
 name: tests
 on:
   push:
+    branches-ignore: [results]   # 실행기가 올리는 결과 브랜치에는 코드가 없다
+    paths-ignore: ["inputs/**"]
   pull_request:
 jobs:
   test:

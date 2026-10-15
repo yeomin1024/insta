@@ -1,3 +1,4 @@
+# VERSION: v1.1.0 — 2026-10-15 — 실행기(runner) 연동: GitHub에서 코드 받아 실행 → 결과 GitHub 업로드
 # VERSION: v1.0.0 — 2026-10-15 — 최초 릴리스: 인스타그램 콘텐츠 성과 분석기
 """
 insta_analyzer — 인스타그램 콘텐츠 성과 분석기
@@ -9,5 +10,5 @@ insta_analyzer — 인스타그램 콘텐츠 성과 분석기
 보장하지 않는다.
 """
 
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 __all__ = ["__version__"]

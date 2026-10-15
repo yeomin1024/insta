@@ -1,3 +1,4 @@
+# VERSION: v1.1.0 — 2026-10-15 — INSTA_CACHE_DIR 환경변수, import-csv --as-of 시간대 오프셋 지원(실행기 연동)
 # VERSION: v1.0.0 — 2026-10-15 — 최초 릴리스: 명령줄 인터페이스
 """
 사용 예:
@@ -32,7 +33,12 @@ out = print
 
 
 def _cfg(args) -> Config:
-    return load_config(args.config) if args.config else load_config(None)
+    cfg = load_config(args.config) if args.config else load_config(None)
+    cache_dir = os.environ.get("INSTA_CACHE_DIR")
+    if cache_dir:  # 실행기(runner)가 코드 폴더 밖의 영구 캐시 폴더를 지정할 때 사용
+        cfg.api.cache_dir = cache_dir
+        log_event(logger, STAGE_CLI, "cache_dir_from_env", path=cache_dir)
+    return cfg
 
 
 def _print_summary(po) -> None:
@@ -103,7 +109,10 @@ def cmd_import_csv(args) -> int:
         account["followers_count"] = args.followers
     account["source"] = "csv"
     if args.as_of:
-        account["fetched_at"] = pd.Timestamp(args.as_of, tz=tz).tz_convert("UTC").isoformat()
+        ts = pd.Timestamp(args.as_of)  # '2026-10-15'(현지 시각) 또는 '2026-10-15T09:30+00:00'(오프셋 포함)
+        ts = ts.tz_localize(tz) if ts.tzinfo is None else ts
+        account["fetched_at"] = ts.tz_convert("UTC").isoformat()
+        log_event(logger, STAGE_CLI, "as_of", value=account["fetched_at"], input=args.as_of)
     acc_path.write_text(json.dumps(account, ensure_ascii=False, indent=2), encoding="utf-8")
     out(f"가져오기 완료: {len(df)}개 게시물 → {d / 'posts.csv'}")
     return 0

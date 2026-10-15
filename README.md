@@ -11,6 +11,76 @@
 
 ---
 
+## 🚀 실행 구조: GitHub에서 코드를 받아 실행하고, 결과는 GitHub에
+
+```
+GitHub 저장소 yeomin1024/insta
+ ├─ insta_analyzer/                 ← ① 분석 코드 (여기만 고치면 다음 실행부터 반영)
+ ├─ runner/run.py                   ← ② 실행기: 분석 코드를 GitHub에서 받아(git fetch) → 설치 → 실행 → 결과 푸시
+ ├─ .github/workflows/analyze.yml   ← ③ 자동 실행: 수동 버튼 / 매주 월 08:53 / inputs/에 CSV 업로드 시
+ ├─ inputs/                         ←   (CSV 방식) Business Suite 내보내기 파일을 여기 업로드
+ ├─ config.toml                     ←   (선택) 내 주제 정의 등 분석 설정 — 비밀값 넣지 말 것
+ └─ [results 브랜치]                ← ④ 결과: README(최신 요약·추천 TOP 5) + reports/<계정>/latest/, history/, runs.csv
+```
+
+- 실행기는 **매번 GitHub에서 지정한 버전의 분석 코드를 새로 받아** 실행합니다(`--code-ref`: 브랜치·태그·커밋).
+  결과마다 `run.json`에 **분석 코드 커밋 SHA·버전·데이터 소스·기준 시각·단계별 소요 시간**이 남아 어떤 코드로 만든 결과인지 추적됩니다.
+- 결과는 코드와 섞이지 않게 **`results` 브랜치**에 쌓입니다(계정별 최근 12회 보관, 실패한 실행은 `-failed` 기록만 남기고 `latest`는 유지).
+- 같은 시간에 두 번 실행돼도 결과가 꼬이지 않도록 직렬화(concurrency) + 푸시 충돌 시 최신 상태를 다시 받아 재적용(최대 5회).
+- 토큰(GITHUB_TOKEN·IG_ACCESS_TOKEN)은 환경변수/Secrets로만 받고 로그·기록에서 `***`로 가립니다.
+
+### ⚠️ 먼저: 이 저장소는 현재 **공개(public)** 입니다
+
+결과에는 캡션·조회수·팔로워 등 계정 데이터가 들어갑니다. 실행기는 **공개 저장소에 실제 데이터 결과를 올리는 것을 기본 차단**합니다
+(데모 데이터는 허용). 아래 중 하나를 선택하세요.
+
+| 방법 | 설정 |
+|---|---|
+| **A. 저장소를 Private으로 전환 (가장 간단)** | Settings → General → Danger Zone → Change visibility |
+| B. 코드는 공개, 결과는 별도 비공개 저장소 | 비공개 저장소(예: `insta-results`) 생성 → Variables `RESULTS_REPO=yeomin1024/insta-results`, Secrets `RESULTS_TOKEN`(해당 저장소 contents 쓰기 권한 PAT) |
+| C. 공개를 감수 | Variables `ALLOW_PUBLIC_RESULTS=true` |
+
+공개 저장소에서 실제 데이터로 돌리면 Actions 로그도 공개이므로, 실행기는 분석 출력을 화면에 찍지 않고 결과의 `analysis.log`에만 남깁니다.
+
+### GitHub Actions로 실행 (권장)
+
+1. (위 표에서 공개 여부 처리)
+2. 데이터 연결 — 둘 중 하나
+   - **API**: Settings → Secrets and variables → Actions → Secrets에 `IG_ACCESS_TOKEN`, `IG_USER_ID` 등록 ([토큰 발급](#방법-b--공식-instagram-graph-api-자동-수집--팔로워-접속-시간--경쟁-계정))
+   - **CSV**: Business Suite 내보내기 파일을 `inputs/`에 업로드(GitHub 웹 `Add file → Upload files`) → **업로드하면 자동 실행**
+3. (선택) `config.example.toml`을 `config.toml`로 복사해 `[topics]`에 내 주제를 적고 커밋
+4. Actions 탭 → **insta-analysis** → **Run workflow** (소스: auto/api/csv/demo, 분석 코드 버전, 경쟁 계정 선택)
+5. 결과 보기: 저장소에서 브랜치를 **`results`** 로 바꾸면 첫 화면에 최신 요약·추천 TOP 5·리포트 링크가 보입니다.
+   이후 매주 월요일 08:53(KST)에 자동으로 다시 분석합니다(토큰·CSV가 없으면 예약 실행은 아무것도 올리지 않고 건너뜀).
+
+### 내 PC/서버에서 실행기 실행
+
+실행기는 파일 하나(표준 라이브러리 + git)라서 분석 코드를 미리 받아둘 필요가 없습니다.
+
+```bash
+curl -O https://raw.githubusercontent.com/yeomin1024/insta/HEAD/runner/run.py
+export GITHUB_TOKEN=github_pat_...        # 결과 푸시용(대상 저장소 contents: write)
+export IG_ACCESS_TOKEN=EAA... IG_USER_ID=1784...   # api 소스일 때
+python run.py --code-repo yeomin1024/insta --source api --results-repo yeomin1024/insta
+#   --code-ref v1.1.0      분석 코드 버전 고정    --source csv --csv-dir ./exports   CSV로 실행
+#   --no-push              커밋만(점검용)         --source demo                      합성 데이터로 시험
+```
+
+실행기 로그 예(로컬 시뮬레이션 실제 출력, 경로 생략):
+
+```
+[FETCH_CODE] level=INFO event=code_ready ref=main sha=144089f28980 analyzer_version=1.1.0
+[INSTALL] level=INFO event=installed elapsed_sec=16.87            ← 첫 실행(가상환경 생성)
+[DATA] level=INFO event=results_repo_visibility visibility=local source=csv   ← GitHub면 public/private
+[DATA] level=INFO event=csv_inputs files=2 as_of=2026-10-15T09:00+00:00 as_of_source=git_commit
+[ANALYZE] level=INFO event=analyze_done elapsed_sec=1.86
+[PUBLISH] level=INFO event=pushed branch=results path=reports/mini_acc/history/2026-10-15_191619
+[RUNNER] level=INFO event=finished status=success duration_sec=20.3 stages={"fetch_code":0.08,"install":16.87,"analyze":2.77,"publish":0.19}
+                                                                    ← 두 번째 실행: install_cached → 총 2.3초
+```
+
+---
+
 ## 무엇을 알려주나
 
 | 질문 | 분석 |
@@ -37,6 +107,8 @@
 pip install -r requirements.txt          # pandas, numpy, requests (+ pillow: 선택)
 python -m insta_analyzer demo            # 합성 데이터 생성 → 분석 → output/demo/report.html
 ```
+
+(GitHub에서 받아 실행하는 흐름을 그대로 시험하려면: Actions → insta-analysis → Run workflow → 소스 `demo`)
 
 데모 데이터에는 **정답(효과)이 심어져 있어서** 분석기가 진짜 효과를 찾고, 가짜 효과는 걸러내는지 직접 확인할 수 있습니다
 ([검증 결과](#검증-결과) 참고).
@@ -234,11 +306,13 @@ python -m insta_analyzer score --model-dir output/me --format reel --duration 14
 
 ```bash
 pip install -e ".[dev]"
-pytest -q          # 42개 테스트: 통계(SciPy 기준값 대조), 룩어헤드 방지, CSV, API(가짜 세션), 모델 누수, 정답 복원 E2E
+pytest -q          # 51개 테스트: 통계(SciPy 기준값 대조), 룩어헤드 방지, CSV, API(가짜 세션), 모델 누수, 정답 복원 E2E,
+                   #   실행기(로컬 bare 저장소로 코드 받기→실행→결과 푸시·충돌 재시도·실패 기록·공개 저장소 차단)
 ruff check insta_analyzer tests
 ```
 
 구조: `sources/`(graph_api · csv_import · demo) → `validate` → `features` → `analysis` → `model` → `recommend` → `report/`.
+실행기: `runner/run.py`(FETCH_CODE → INSTALL → DATA → ANALYZE → PUBLISH), 워크플로: `.github/workflows/analyze.yml`.
 변경 이력은 [CHANGELOG.md](CHANGELOG.md).
 
 [^mosseri]: Adam Mosseri, 2025년 1월 영상 — 시청 시간, 좋아요, 보내기(공유)를 핵심 랭킹 신호로 언급하고 Insights에서
