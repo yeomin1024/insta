@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# VERSION: v1.0.1 — 2026-10-15 — api 소스는 IG_ACCESS_TOKEN만 필수(IG_USER_ID 자동 탐색), 경쟁 계정 수집 실패는 경고 후 계속
 # VERSION: v1.0.0 — 2026-10-15 — 최초 릴리스: GitHub에서 분석 코드를 받아 실행하고 결과를 GitHub에 올리는 실행기
 """
 insta-analyzer 실행기 (runner)
@@ -45,7 +46,7 @@ import urllib.request
 from pathlib import Path
 from typing import Any, Callable
 
-RUNNER_VERSION = "1.0.0"
+RUNNER_VERSION = "1.0.1"
 KST = dt.timezone(dt.timedelta(hours=9), "KST")
 SECRET_ENVS = ("GITHUB_TOKEN", "RESULTS_TOKEN", "IG_ACCESS_TOKEN")
 BOT_NAME = "insta-analyzer-bot"
@@ -369,15 +370,20 @@ def run_analysis(py: Path, code_dir: Path, workdir: Path, run_id: str, source: s
         ev("ANALYZE", f"{name}_done", elapsed_sec=round(time.perf_counter() - t0, 2))
 
     if source == "api":
-        if not (os.environ.get("IG_ACCESS_TOKEN") and os.environ.get("IG_USER_ID")):
-            raise RunnerError("DATA", "api 소스에는 IG_ACCESS_TOKEN, IG_USER_ID 환경변수(GitHub Secrets)가 필요합니다",
-                              "저장소 Settings → Secrets and variables → Actions 에 등록하세요")
+        if not os.environ.get("IG_ACCESS_TOKEN"):
+            raise RunnerError("DATA", "api 소스에는 IG_ACCESS_TOKEN 환경변수(GitHub Secrets)가 필요합니다",
+                              "저장소 Settings → Secrets and variables → Actions 에 등록하세요(IG_USER_ID는 선택)")
         fetch = ["fetch", "--out", data_dir]
         if args.since:
             fetch += ["--since", args.since]
         step("fetch", fetch)
         if args.competitors:
-            step("benchmark", ["benchmark", "--data", data_dir, "--usernames", args.competitors])
+            try:  # 경쟁 계정은 부가 기능: 실패해도(예: 인스타그램 로그인 토큰은 business_discovery 불가) 분석은 계속
+                step("benchmark", ["benchmark", "--data", data_dir, "--usernames", args.competitors])
+            except RunnerError as exc:
+                meta["competitors_error"] = str(exc)
+                ev("ANALYZE", "benchmark_skipped", logging.WARNING, error=str(exc)[:160],
+                   next_step="경쟁 계정 분석은 페이스북 로그인 방식 토큰(EAA…)에서만 가능합니다")
         step("analyze", ["analyze", "--data", data_dir, "--out", out_dir])
     elif source == "csv":
         if not csv_files:

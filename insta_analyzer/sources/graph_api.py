@@ -1,3 +1,4 @@
+# VERSION: v1.1.2 — 2026-10-15 — 토큰 종류로 API 호스트 자동 선택·실패 시 대체 호스트 재시도, IG 사용자 ID 자동 탐색
 # VERSION: v1.0.0 — 2026-10-15 — 최초 릴리스: Instagram Graph API 수집기(적응형 지표·캐시·재시도)
 """
 Instagram Graph API(공식) 수집기.
@@ -82,6 +83,21 @@ class GraphAPIError(RuntimeError):
     @property
     def invalid_param(self) -> bool:
         return self.code in INVALID_PARAM_CODES
+
+
+INSTAGRAM_HOST = "graph.instagram.com"   # 인스타그램 로그인 방식(페이스북 페이지 불필요)
+FACEBOOK_HOST = "graph.facebook.com"     # 페이스북 로그인 방식(경쟁 계정 business_discovery 가능)
+TOKEN_ERROR_CODES = {190}                # 잘못된/만료된 OAuth 토큰
+
+
+def guess_host(token: str) -> str | None:
+    """토큰 접두어로 호스트 추정: 인스타그램 로그인 토큰은 'IG…', 페이스북 로그인 토큰은 'EAA…'로 시작한다.
+    추정이 틀려도 connect()가 토큰 오류(190) 시 다른 호스트로 한 번 더 시도한다."""
+    if token.startswith("IG"):
+        return INSTAGRAM_HOST
+    if token.startswith("EAA"):
+        return FACEBOOK_HOST
+    return None
 
 
 class ResponseCache:
@@ -303,6 +319,61 @@ class InsightsFetcher:
         return values
 
 
+def discover_ig_user_id(client: "GraphClient") -> str:
+    """IG_USER_ID를 몰라도 되게: 인스타그램 로그인 방식은 'me', 페이스북 로그인 방식은 연결된 페이지에서 찾는다."""
+    if client.cfg.host == INSTAGRAM_HOST:
+        return "me"
+    payload = client.request("me/accounts", {"fields": "name,instagram_business_account{id,username}", "limit": 100})
+    found = [(p.get("name"), p["instagram_business_account"]) for p in payload.get("data", [])
+             if p.get("instagram_business_account")]
+    if not found:
+        raise ValueError("이 토큰으로 접근 가능한 페이스북 페이지에 연결된 인스타 비즈니스/크리에이터 계정이 없습니다. "
+                         "인스타 계정을 페이지에 연결했는지, 토큰에 pages_show_list 권한이 있는지 확인하세요")
+    if len(found) > 1:
+        log_event(logger, STAGE_API, "multiple_ig_accounts", logging.WARNING,
+                  accounts=[f"{a.get('username')}({a.get('id')})" for _, a in found],
+                  detail="첫 번째 계정을 사용합니다. 다른 계정이면 IG_USER_ID를 지정하세요")
+    page, acc = found[0]
+    log_event(logger, STAGE_API, "ig_user_discovered", page=page, username=acc.get("username"), ig_user_id=acc.get("id"))
+    return str(acc["id"])
+
+
+def connect(token: str, cfg: ApiConfig, user_id: str | None = None, host_explicit: bool = False,
+            session: Any | None = None, sleep: Callable[[float], None] = time.sleep) -> tuple["GraphClient", str]:
+    """토큰으로 접속 가능한 호스트·사용자 ID를 확정한다.
+    호스트 우선순위: 명시값(--host/설정) > 토큰 접두어 추정 > 기본값. 명시하지 않았다면 토큰 오류 시 다른 호스트로 재시도."""
+    hosts = [cfg.host]
+    if not host_explicit:
+        guessed = guess_host(token)
+        if guessed:
+            hosts = [guessed]
+        hosts.append(FACEBOOK_HOST if hosts[0] == INSTAGRAM_HOST else INSTAGRAM_HOST)
+    last: Exception | None = None
+    for i, host in enumerate(hosts):
+        cfg.host = host
+        client = GraphClient(token, cfg, session=session, sleep=sleep)
+        try:
+            uid = user_id or discover_ig_user_id(client)
+            prof = client.request(uid, {"fields": "username"})
+            log_event(logger, STAGE_API, "connected", host=host, user_id=uid, username=prof.get("username"),
+                      host_source="explicit" if host_explicit else ("token_prefix" if guess_host(token) else "default"),
+                      user_id_source="env" if user_id else "auto", attempt=i + 1)
+            return client, uid
+        except GraphAPIError as e:
+            last = e
+            if e.code in TOKEN_ERROR_CODES and i + 1 < len(hosts):
+                log_event(logger, STAGE_API, "host_fallback", logging.WARNING, failed_host=host, next_host=hosts[i + 1],
+                          error=e.api_message[:120])
+                continue
+            hint = ("토큰이 만료(60일)됐거나 잘못 복사됐습니다 — 새로 발급해 IG_ACCESS_TOKEN(Secrets)을 갱신하세요"
+                    if e.code in TOKEN_ERROR_CODES else
+                    "토큰 권한(insights 포함)과 IG_USER_ID를 확인하세요")
+            log_event(logger, STAGE_API, "connect_failed", logging.ERROR, host=host, code=e.code,
+                      error=e.api_message[:160], next_step=hint)
+            raise
+    raise last if last else RuntimeError("API 접속 실패")
+
+
 def _media_to_row(m: dict, account: str, fetched_at: pd.Timestamp) -> dict:
     children = m.get("children", {}).get("data") if isinstance(m.get("children"), dict) else None
     return {
@@ -324,8 +395,7 @@ def fetch_own_account(client: GraphClient, user_id: str, cache: ResponseCache | 
         profile = client.request(user_id, {"fields": "username,followers_count,media_count,name"})
     except GraphAPIError as e:
         log_event(logger, STAGE_API, "profile_failed", logging.ERROR, user_id=user_id, error=str(e),
-                  next_step="IG_USER_ID(인스타 비즈니스 계정 ID)와 토큰 권한을 확인하세요. "
-                            "인스타그램 로그인 방식이면 --host graph.instagram.com 과 IG_USER_ID=me 사용")
+                  next_step="토큰 만료(60일) 시 재발급 후 Secrets 갱신 / IG_USER_ID와 토큰 권한 확인")
         raise
     username = profile.get("username", "me")
     log_event(logger, STAGE_API, "profile", username=username, followers=profile.get("followers_count"),

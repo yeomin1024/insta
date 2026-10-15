@@ -161,3 +161,61 @@ def test_token_is_never_logged(capsys):
     err = capsys.readouterr().err
     assert TOKEN not in err and "EAAB…" in err
     logging.getLogger("insta_analyzer").setLevel(logging.WARNING)
+
+
+# ---------------------------------------------------------------- v1.1.2: 토큰만으로 접속
+from insta_analyzer.sources.graph_api import FACEBOOK_HOST, INSTAGRAM_HOST, connect, guess_host  # noqa: E402
+
+
+def test_guess_host_from_token_prefix():
+    assert guess_host("IGAAabc") == INSTAGRAM_HOST
+    assert guess_host("EAABxyz") == FACEBOOK_HOST
+    assert guess_host("something") is None
+
+
+def test_connect_instagram_login_token_uses_me():
+    def handler(url, params):
+        assert url.startswith(f"https://{INSTAGRAM_HOST}/")
+        return FakeResp(200, {"id": "1784", "username": "me_ig"})
+
+    session = FakeSession(handler)
+    client, uid = connect("IGAA-TOKEN-123456", ApiConfig(min_interval_sec=0), None, False, session=session,
+                          sleep=lambda s: None)
+    assert uid == "me" and client.cfg.host == INSTAGRAM_HOST
+
+
+def test_connect_facebook_token_discovers_ig_user_id():
+    def handler(url, params):
+        assert url.startswith(f"https://{FACEBOOK_HOST}/")
+        if url.endswith("/me/accounts"):
+            return FakeResp(200, {"data": [{"name": "내 페이지", "id": "p1",
+                                            "instagram_business_account": {"id": "17841400001", "username": "shop"}}]})
+        return FakeResp(200, {"id": "17841400001", "username": "shop"})
+
+    client, uid = connect("EAAB-TOKEN-123456", ApiConfig(min_interval_sec=0), None, False,
+                          session=FakeSession(handler), sleep=lambda s: None)
+    assert uid == "17841400001" and client.cfg.host == FACEBOOK_HOST
+
+
+def test_connect_falls_back_to_other_host_on_token_error():
+    def handler(url, params):
+        if FACEBOOK_HOST in url:
+            return FakeResp(400, {"error": {"code": 190, "message": "Invalid OAuth access token"}})
+        return FakeResp(200, {"id": "1", "username": "ok"})
+
+    client, uid = connect("UNKNOWN-PREFIX-TOKEN", ApiConfig(min_interval_sec=0), "me", False,
+                          session=FakeSession(handler), sleep=lambda s: None)
+    assert client.cfg.host == INSTAGRAM_HOST and uid == "me"
+
+
+def test_connect_explicit_host_does_not_fall_back():
+    import pytest
+
+    from insta_analyzer.sources.graph_api import GraphAPIError
+
+    def handler(url, params):
+        return FakeResp(400, {"error": {"code": 190, "message": "Error validating access token: Session has expired"}})
+
+    with pytest.raises(GraphAPIError):
+        connect("IGAA-EXPIRED-123456", ApiConfig(min_interval_sec=0, host=FACEBOOK_HOST), "me", True,
+                session=FakeSession(handler), sleep=lambda s: None)

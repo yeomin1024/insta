@@ -1,3 +1,4 @@
+# VERSION: v1.1.2 — 2026-10-15 — API 호스트 자동 선택·IG_USER_ID 선택 입력(자동 탐색), API 오류도 정상 종료 처리
 # VERSION: v1.1.0 — 2026-10-15 — INSTA_CACHE_DIR 환경변수, import-csv --as-of 시간대 오프셋 지원(실행기 연동)
 # VERSION: v1.0.0 — 2026-10-15 — 최초 릴리스: 명령줄 인터페이스
 """
@@ -119,20 +120,21 @@ def cmd_import_csv(args) -> int:
 
 
 def _client(args, cfg: Config):
-    from insta_analyzer.sources.graph_api import GraphClient
+    from insta_analyzer.config import ApiConfig
+    from insta_analyzer.sources.graph_api import connect
 
+    explicit = bool(args.host) or cfg.api.host != ApiConfig().host  # --host 또는 config.toml에서 직접 지정
     if args.host:
         cfg.api.host = args.host
     if args.api_version:
         cfg.api.version = args.api_version
-    token = os.environ.get("IG_ACCESS_TOKEN", "")
-    user_id = os.environ.get("IG_USER_ID", "me" if "instagram.com" in cfg.api.host else "")
-    if not token or not user_id:
+    token = os.environ.get("IG_ACCESS_TOKEN", "").strip()
+    if not token:
         log_event(logger, STAGE_CLI, "missing_credentials", logging.ERROR,
-                  next_step="export IG_ACCESS_TOKEN=... ; export IG_USER_ID=<인스타 비즈니스 계정 ID> "
-                            "(README의 '토큰 발급' 참고). 토큰 없이 쓰려면 import-csv 사용")
+                  next_step="export IG_ACCESS_TOKEN=... (README의 '토큰 발급' 참고). IG_USER_ID는 선택(자동 탐색). "
+                            "토큰 없이 쓰려면 import-csv 사용")
         raise SystemExit(2)
-    return GraphClient(token, cfg.api), user_id
+    return connect(token, cfg.api, os.environ.get("IG_USER_ID", "").strip() or None, explicit)
 
 
 def cmd_fetch(args) -> int:
@@ -303,7 +305,7 @@ def main(argv: list[str] | None = None) -> int:
     log_event(logger, STAGE_CLI, "start", command=args.cmd, version=__version__)
     try:
         return int(args.func(args) or 0)
-    except (FileNotFoundError, ValueError) as exc:
+    except (FileNotFoundError, ValueError, RuntimeError) as exc:  # RuntimeError: Graph API 오류 포함
         log_event(logger, STAGE_CLI, "failed", logging.ERROR, command=args.cmd, error=type(exc).__name__,
                   detail=str(exc))
         out(f"\n오류: {exc}", file=sys.stderr)

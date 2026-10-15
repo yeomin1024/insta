@@ -5,7 +5,8 @@
 #   - 수동: Actions 탭 → insta-analysis → Run workflow (소스/코드 버전/경쟁 계정 선택)
 #   - 자동: 매주 월요일 08:53(KST) / inputs/ 폴더에 CSV를 올리면(push) 즉시 실행
 # 필요한 설정 (Settings → Secrets and variables → Actions)
-#   Secrets  : IG_ACCESS_TOKEN, IG_USER_ID (api 소스), RESULTS_TOKEN (결과를 '다른' 저장소에 올릴 때만, contents:write PAT)
+#   Secrets  : IG_ACCESS_TOKEN (api 소스, 발급 방법은 README), IG_USER_ID (선택 — 비우면 자동 탐색),
+#              RESULTS_TOKEN (결과를 '다른' 저장소에 올릴 때만, contents:write PAT)
 #   Variables: RESULTS_REPO (기본: 이 저장소), RESULTS_BRANCH (기본: results), INSTA_SOURCE (예약 실행 소스, 기본 auto)
 #              ALLOW_PUBLIC_RESULTS (기본 true — 저장소 소유자가 2026-10-15 공개 감수를 결정. false로 두면 공개 저장소 업로드 차단)
 name: insta-analysis

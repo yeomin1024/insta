@@ -46,7 +46,7 @@ GitHub 저장소 yeomin1024/insta
 
 1. (위 표에서 공개 여부 처리)
 2. 데이터 연결 — 둘 중 하나
-   - **API**: Settings → Secrets and variables → Actions → Secrets에 `IG_ACCESS_TOKEN`, `IG_USER_ID` 등록 ([토큰 발급](#방법-b--공식-instagram-graph-api-자동-수집--팔로워-접속-시간--경쟁-계정))
+   - **API**: Settings → Secrets and variables → Actions → Secrets에 `IG_ACCESS_TOKEN` 등록(`IG_USER_ID`는 선택) — [토큰 발급 방법](#방법-b--공식-instagram-graph-api-자동-수집--팔로워-접속-시간--경쟁-계정)
    - **CSV**: Business Suite 내보내기 파일을 `inputs/`에 업로드(GitHub 웹 `Add file → Upload files`) → **업로드하면 자동 실행**
 3. (선택) `config.example.toml`을 `config.toml`로 복사해 `[topics]`에 내 주제를 적고 커밋
 4. Actions 탭 → **insta-analysis** → **Run workflow** (소스: auto/api/csv/demo, 분석 코드 버전, 경쟁 계정 선택)
@@ -60,7 +60,7 @@ GitHub 저장소 yeomin1024/insta
 ```bash
 curl -O https://raw.githubusercontent.com/yeomin1024/insta/HEAD/runner/run.py
 export GITHUB_TOKEN=github_pat_...        # 결과 푸시용(대상 저장소 contents: write)
-export IG_ACCESS_TOKEN=EAA... IG_USER_ID=1784...   # api 소스일 때
+export IG_ACCESS_TOKEN=IGAA...                      # api 소스일 때 (IG_USER_ID는 선택)
 python run.py --code-repo yeomin1024/insta --source api --results-repo yeomin1024/insta
 #   --code-ref v1.1.0      분석 코드 버전 고정    --source csv --csv-dir ./exports   CSV로 실행
 #   --no-push              커밋만(점검용)         --source demo                      합성 데이터로 시험
@@ -136,22 +136,50 @@ python -m insta_analyzer --config config.toml analyze --data data/me --out outpu
 
 ### 방법 B — 공식 Instagram Graph API (자동 수집 + 팔로워 접속 시간 + 경쟁 계정)
 
-인스타 계정이 **프로페셔널(비즈니스/크리에이터)** 이어야 합니다. 두 가지 로그인 방식 중 하나로 토큰을 받습니다.
-(Meta 개발자 화면과 권한 이름은 자주 바뀌므로 [developers.facebook.com](https://developers.facebook.com/docs/instagram-platform)의
-최신 안내를 함께 확인하세요.)
+필요한 건 **`IG_ACCESS_TOKEN` 하나**입니다. `IG_USER_ID`는 선택 — 비워 두면 자동으로 찾습니다(v1.1.2).
+API 주소도 토큰 종류(`IG…` / `EAA…`)를 보고 자동 선택합니다.
 
-| | 인스타그램 로그인 방식 | 페이스북 로그인 방식 |
-|---|---|---|
-| 페이스북 페이지 | 불필요 | 인스타 계정을 페이지에 연결 필요 |
-| 권한 | `instagram_business_basic`, `instagram_business_manage_insights` | `instagram_basic`, `instagram_manage_insights`, `pages_show_list`, `pages_read_engagement` |
-| 실행 옵션 | `--host graph.instagram.com`, `IG_USER_ID=me` | 기본값, `IG_USER_ID`=인스타 비즈니스 계정 ID |
-| 경쟁 계정(business_discovery) | ✗ | ✓ |
+#### 0) 공통 준비: 인스타 계정을 프로페셔널로 전환
+인스타 앱 → 프로필 → ☰ → **계정 유형 및 도구 → 프로페셔널 계정으로 전환** → 크리에이터 또는 비즈니스 (무료).
+
+#### 1) 인스타그램 로그인 방식 — 가장 쉬움 (페이스북 페이지 불필요, 경쟁 계정 분석은 불가)
+1. [developers.facebook.com](https://developers.facebook.com) 로그인(페이스북 계정) → **내 앱 → 앱 만들기**
+2. 사용 사례에서 **Instagram**(인스타그램 메시지·콘텐츠 관리)을 선택해 앱 생성
+3. 앱 대시보드 → **Instagram → API setup with Instagram login(인스타그램 로그인 API 설정)**
+4. **Generate access tokens(액세스 토큰 생성)** 에서 **Add account(계정 추가)** → 팝업에서 내 인스타 계정 로그인·허용
+   → 계정 옆 **Generate token** → 표시되는 토큰(`IG`로 시작)을 복사 = **`IG_ACCESS_TOKEN`**
+   - 계정 옆에 보이는 숫자 ID가 `IG_USER_ID`지만 **넣지 않아도 됩니다**(자동으로 `me` 사용).
+   - 계정 추가가 안 되면: 앱 역할(App roles)에 내 인스타 계정을 *Instagram 테스터*로 추가 → 인스타 앱
+     설정의 **앱 및 웹사이트 → 테스터 초대**에서 수락 후 다시 시도(안내서마다 필요 여부가 다릅니다).
+
+#### 2) 페이스북 로그인 방식 — 경쟁 계정(business_discovery) 분석까지 하려면
+1. 인스타 프로페셔널 계정을 **페이스북 페이지에 연결**(인스타 앱 → 계정 센터 또는 페이지 설정 → 연결된 계정)
+2. 위 1)의 1–2처럼 앱 생성 후 [Graph API 탐색기](https://developers.facebook.com/tools/explorer/) 열기 →
+   내 앱 선택 → 권한 추가: `instagram_basic`, `instagram_manage_insights`, `pages_show_list`, `pages_read_engagement`
+   → **Generate Access Token**(`EAA`로 시작)
+3. 이 토큰은 1~2시간짜리이므로 [액세스 토큰 디버거](https://developers.facebook.com/tools/debug/accesstoken/)에서
+   **Extend Access Token(액세스 토큰 연장)** → 약 60일짜리 토큰 = **`IG_ACCESS_TOKEN`**
+4. `IG_USER_ID`는 비워 두면 연결된 페이지에서 자동으로 찾습니다(직접 확인하려면 탐색기에서
+   `me/accounts?fields=name,instagram_business_account{id,username}` 실행 → `instagram_business_account.id`).
+
+#### 3) GitHub에 등록
+저장소 **Settings → Secrets and variables → Actions → New repository secret**
+- Name `IG_ACCESS_TOKEN`, Secret = 복사한 토큰 → Add secret
+- (선택) `IG_USER_ID`
+
+등록 후 Actions → insta-analysis → Run workflow(source `api` 또는 `auto`). 로그의 `event=connected host=… username=…`로
+어느 방식·어느 계정으로 접속했는지 확인할 수 있습니다.
+
+> ⚠️ 토큰은 **비밀번호와 같습니다.** 채팅·이슈·코드·CSV에 붙여넣지 말고 Secrets에만 넣으세요(실행기는 로그에서 `***`로 가립니다).
+> ⏰ 토큰은 **약 60일 후 만료**되며 자동 갱신되지 않습니다. 만료되면 로그에 `event=connect_failed code=190`과 안내가 뜹니다 —
+> 같은 방법으로 새로 발급해 Secret 값만 바꾸면 됩니다(달력에 50일 뒤 알림을 걸어두세요).
+
+로컬에서 직접 실행할 때:
 
 ```bash
-export IG_ACCESS_TOKEN="EAA..."          # 코드·로그·캐시에 저장되지 않습니다(로그에는 앞 4자리만)
-export IG_USER_ID="17841400000000000"
+export IG_ACCESS_TOKEN="IGAA..."          # 또는 EAA...
 python -m insta_analyzer fetch --out data/me --since 2025-01-01 --with-images
-python -m insta_analyzer benchmark --data data/me --usernames rival_one,rival_two   # 선택
+python -m insta_analyzer benchmark --data data/me --usernames rival_one,rival_two   # 선택(페이스북 로그인 토큰만)
 python -m insta_analyzer --config config.toml analyze --data data/me --out output/me --thumbs .cache/thumbs
 ```
 

@@ -2,6 +2,18 @@
 
 형식: `버전 — 날짜 — 변경 내용(이유) — 영향 받은 모듈`
 
+## v1.1.2 — 2026-10-15 — 토큰 하나만으로 API 연결 (v1.1.1 → v1.1.2)
+
+문제: 가장 쉬운 '인스타그램 로그인' 방식 토큰은 `graph.instagram.com`을 써야 하는데 Actions는 기본값
+`graph.facebook.com`으로 요청 → 실패. 또 `IG_USER_ID` Secret이 비어 있으면 실행기가 중단.
+- `graph_api.connect()`: 호스트 = 명시값(--host/설정) > 토큰 접두어(`IG…`→instagram, `EAA…`→facebook) > 기본값.
+  명시하지 않았으면 토큰 오류(190) 시 다른 호스트로 1회 재시도. 접속 결과를 `event=connected`로 기록.
+- `graph_api.discover_ig_user_id()`: `IG_USER_ID` 미지정 시 인스타그램 로그인은 `me`, 페이스북 로그인은
+  `me/accounts`에서 연결된 인스타 비즈니스 계정 ID 자동 탐색(여러 개면 경고 후 첫 번째).
+- 토큰 만료(190) 시 `connect_failed` 로그에 "재발급 후 Secrets 갱신" 안내. CLI는 API 오류도 정상 종료 코드 1로 처리.
+- 실행기 v1.0.1: api 소스는 `IG_ACCESS_TOKEN`만 필수, 경쟁 계정 수집 실패는 경고 후 분석 계속.
+- README: 토큰 발급 절차(두 방식) 상세화. 테스트 5개 추가(총 56개).
+
 ## v1.1.1 — 2026-10-15 — ⚠️ 위험 관련 기본값 변경: 공개 저장소 결과 업로드 허용 (v1.1.0 → v1.1.1)
 
 - 저장소 소유자가 "공개 감수"를 결정 → `analyze.yml`의 `ALLOW_PUBLIC_RESULTS` 기본값을 `true`로 변경
