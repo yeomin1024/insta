@@ -38,7 +38,7 @@ GitHub 저장소 yeomin1024/insta
 |---|---|
 | **A. 저장소를 Private으로 전환 (가장 간단)** | Settings → General → Danger Zone → Change visibility |
 | B. 코드는 공개, 결과는 별도 비공개 저장소 | 비공개 저장소(예: `insta-results`) 생성 → Variables `RESULTS_REPO=yeomin1024/insta-results`, Secrets `RESULTS_TOKEN`(해당 저장소 contents 쓰기 권한 PAT) |
-| C. 공개를 감수 | Variables `ALLOW_PUBLIC_RESULTS=true` |
+| C. 공개를 감수 **(현재 설정 — 2026-10-15 소유자 결정)** | 워크플로 기본값이 허용. 다시 막으려면 Variables `ALLOW_PUBLIC_RESULTS=false` |
 
 공개 저장소에서 실제 데이터로 돌리면 Actions 로그도 공개이므로, 실행기는 분석 출력을 화면에 찍지 않고 결과의 `analysis.log`에만 남깁니다.
 

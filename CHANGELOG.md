@@ -2,6 +2,15 @@
 
 형식: `버전 — 날짜 — 변경 내용(이유) — 영향 받은 모듈`
 
+## v1.1.1 — 2026-10-15 — ⚠️ 위험 관련 기본값 변경: 공개 저장소 결과 업로드 허용 (v1.1.0 → v1.1.1)
+
+- 저장소 소유자가 "공개 감수"를 결정 → `analyze.yml`의 `ALLOW_PUBLIC_RESULTS` 기본값을 `true`로 변경
+  (이전: 변수 미설정 시 공개 저장소에 실제 계정 데이터 결과 업로드 차단).
+  되돌리기: Settings → Secrets and variables → Actions → Variables에 `ALLOW_PUBLIC_RESULTS=false`.
+- 실행기(`runner/run.py`) 자체의 안전 기본값(차단)은 그대로 — 워크플로에서만 허용 플래그를 넘긴다.
+  실행 시 `event=public_results_allowed` 경고 로그로 매번 기록된다.
+- 공개 저장소 Actions 로그에 실제 데이터 분석 출력을 노출하지 않는 동작은 유지.
+
 ## v1.1.0 — 2026-10-15 — GitHub 실행 구조: 코드는 GitHub에서 받아 실행, 결과는 GitHub에 업로드 (v1.0.0 → v1.1.0)
 
 요청: "분석 코드는 깃허브에 두고, 실행 코드는 그걸 받아서 실행하고, 결과는 깃허브에 올리도록".

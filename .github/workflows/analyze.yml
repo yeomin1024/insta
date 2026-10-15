@@ -1,3 +1,4 @@
+# VERSION: v1.0.1 — 2026-10-15 — 저장소 소유자 결정: 공개 저장소 결과 업로드 기본 허용(ALLOW_PUBLIC_RESULTS=false로 차단 가능)
 # VERSION: v1.0.0 — 2026-10-15 — 최초 릴리스: GitHub에서 분석 코드를 받아 실행 → 결과를 results 브랜치에 업로드
 #
 # 실행 방법
@@ -6,7 +7,7 @@
 # 필요한 설정 (Settings → Secrets and variables → Actions)
 #   Secrets  : IG_ACCESS_TOKEN, IG_USER_ID (api 소스), RESULTS_TOKEN (결과를 '다른' 저장소에 올릴 때만, contents:write PAT)
 #   Variables: RESULTS_REPO (기본: 이 저장소), RESULTS_BRANCH (기본: results), INSTA_SOURCE (예약 실행 소스, 기본 auto)
-#              ALLOW_PUBLIC_RESULTS=true (공개 저장소에 실제 데이터 결과 업로드를 감수할 때만)
+#              ALLOW_PUBLIC_RESULTS (기본 true — 저장소 소유자가 2026-10-15 공개 감수를 결정. false로 두면 공개 저장소 업로드 차단)
 name: insta-analysis
 
 on:
@@ -73,7 +74,7 @@ jobs:
           IN_COMPETITORS: ${{ inputs.competitors }}
           IN_RESULTS_REPO: ${{ vars.RESULTS_REPO || github.repository }}
           IN_RESULTS_BRANCH: ${{ vars.RESULTS_BRANCH || 'results' }}
-          IN_ALLOW_PUBLIC: ${{ vars.ALLOW_PUBLIC_RESULTS }}
+          IN_ALLOW_PUBLIC: ${{ vars.ALLOW_PUBLIC_RESULTS || 'true' }}   # ⚠️ 공개 감수(소유자 결정). 차단하려면 변수에 false
           IN_EVENT: ${{ github.event_name }}
         run: |
           extra=()
