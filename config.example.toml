@@ -1,0 +1,47 @@
+# VERSION: v1.0.0 — 2026-10-15 — 최초 릴리스: 설정 예시
+# 사용법: cp config.example.toml config.toml  →  수정  →  --config config.toml
+# 적지 않은 값은 기본값이 쓰이며, 바꾼 값은 실행 로그에 `event=config_override`로 기록됩니다.
+
+[analysis]
+timezone = "Asia/Seoul"        # 게시 시각(시간대/요일) 계산 기준
+min_post_age_days = 7          # 게시 후 N일 미만은 '집계 중'으로 분석 제외 (릴스 위주 계정은 7~14 권장)
+baseline_window = 20           # 성과지수 기준선 = 직전 N개 게시물 중앙값
+baseline_min_periods = 5
+min_group_size = 5             # 그룹당 최소 표본(미만이면 '표본 부족')
+fdr_q_strong = 0.10            # '강한 근거' q값 기준(Benjamini–Hochberg)
+p_suggestive = 0.05            # '가능성 있음' p값 기준
+shrinkage_k = 5.0              # 해시태그·시간대 축소추정 강도(가상 표본 수)
+bootstrap_samples = 2000
+random_seed = 42               # 재현성: 같은 데이터+시드 → 같은 결과
+min_term_count = 4             # 해시태그/키워드 최소 사용 횟수
+model_top_terms = 8            # 모델에 넣는 상위 해시태그/키워드 수(학습 구간 안에서 선택)
+walk_forward_folds = 5
+min_train_size = 30
+viral_threshold = 3.0          # 평소 대비 N배 이상 = 바이럴
+hour_bucket_size = 3           # 시간대 묶음 단위(시간)
+include_stories = false
+
+[plan]
+posts_per_week = 0             # 0 = 현재 게시 빈도 기반 자동(3~7회)
+weeks = 2
+explore_ratio = 0.2            # 플랜 중 '실험' 슬롯 비율
+
+[monetization]
+cpm_krw = 0                    # 협찬 단가 참고 추정용 CPM(원/1000 도달). 0 = 추정 안 함
+
+[api]
+host = "graph.facebook.com"    # 인스타그램 로그인 방식이면 "graph.instagram.com"
+version = "v23.0"
+insights_freeze_days = 30      # 게시 후 30일 지난 시점의 인사이트는 캐시 재사용
+online_followers_tz = "America/Los_Angeles"  # 접속 시간 키 해석(가정값 — 앱 '가장 활발한 시간'과 비교해 확인)
+
+# 콘텐츠 필라(주제) 정의: 캡션 본문 또는 해시태그에 키워드가 '포함'되면 그 주제로 분류(복수 가능).
+# 정의하지 않으면 자주 쓴 해시태그로 자동 추정하지만, 직접 정의하는 편이 훨씬 정확합니다.
+[topics]
+"레시피" = ["레시피", "요리", "집밥", "도시락"]
+"살림꿀팁" = ["꿀팁", "살림", "청소", "정리", "세탁"]
+"브이로그" = ["브이로그", "일상", "vlog", "루틴"]
+"제품리뷰" = ["리뷰", "내돈내산", "언박싱", "추천템"]
+
+# 키워드 분석에서 뺄 단어(계정 이름, 시그니처 문구 등)
+# extra_stopwords = ["내계정이름", "매일업로드"]

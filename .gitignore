@@ -1,0 +1,16 @@
+# 개인 데이터·분석 결과·API 캐시는 저장소에 올리지 않는다
+data/
+output/
+.cache/
+.env
+config.toml
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.pytest_cache/
+.ruff_cache/
+.venv/
